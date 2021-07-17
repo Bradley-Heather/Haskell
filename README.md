@@ -1,3 +1,3 @@
 # Haskell
 
-A repository for all thing learning Haskell related
+A repository for all things learning Haskell related
