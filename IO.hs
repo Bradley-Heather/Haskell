@@ -61,3 +61,15 @@ greeting = do
          | otherwise             = "Not bad..."
      putStrLn answer
 
+ask :: String -> IO String 
+ask q = do
+    putStrLn q
+    getLine 
+
+askMany :: [String] -> IO [String]
+askMany []      = return []
+askMany (q: qs) = do 
+    answer <- ask q
+    answers <- askMany qs
+    return (answer : answers)
+
