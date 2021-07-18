@@ -1,7 +1,7 @@
 module IO where
 
 
-import     Control.Monad    (liftM, liftM2)
+import     Control.Monad    (liftM, liftM2, mapM)
 import     Data.Char        (toUpper)
 import     System.Directory
 import     System.IO        (Handle, IOMode (ReadMode), hGetLine, hIsEOF, withFile)
@@ -71,5 +71,42 @@ askMany []      = return []
 askMany (q: qs) = do 
     answer <- ask q
     answers <- askMany qs
-    return (answer : answers)
+    return $ answer : answers
 
+sequence' :: [IO a]  -> IO [a]
+sequence' []        = return []
+sequence' (x : xs)  = do
+    a <- x 
+    as <- sequence' xs 
+    return $ a : as  
+
+askMany'' :: [String] -> IO [String]
+askMany'' = mapM ask 
+
+
+data Interaction =
+    Question String Interaction Interaction
+  | Result String 
+  deriving Show 
+
+askBool :: String -> IO Bool 
+askBool question = do
+    putStrLn (question ++ " [yn]")
+    x <- getChar
+    putStrLn ""
+    return (x `elem` "yY")
+
+interaction :: Interaction -> IO ()
+interaction (Question q y n) = do 
+    b <- askBool q
+    if b then interaction y else interaction n
+interaction (Result r) = putStrLn r
+
+ford :: Interaction
+ford  =
+    Question "Would you like a car?"
+       (Question "Do you like Black"
+         (Result "Good for you")
+         ford 
+       )     
+       (Result "Never mind then")
