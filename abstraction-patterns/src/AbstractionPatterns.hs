@@ -86,6 +86,8 @@ labelTree'Orig (Node l x r) =
 labelTree'Orig Leaf =
     MkWithCounter (\ currentLabel -> (Leaf, currentLabel))
 
+{- 
+
 labelTree' :: Tree a -> WithCounter (Tree (Int , a))
 labelTree' (Node l x r) =
     labelTree' l `bindWithCounter` \l' -> 
@@ -96,6 +98,18 @@ labelTree' (Node l x r) =
 labelTree' Leaf =
     returnWithCounter Leaf
 
+-}
+
+labelTree' :: Tree a -> WithCounter (Tree (Int, a))
+labelTree' (Node l x r) = do
+    l'        <- labelTree' l
+    labelForX <- tick 
+    r'        <- labelTree' r
+    return (Node l' (labelForX, x) r')
+
+labalTree' Leaf =
+    return Leaf 
+    
 tick :: WithCounter Int 
 tick = 
     MkWithCounter (\ current -> (current, current + 1))
