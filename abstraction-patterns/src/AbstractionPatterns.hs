@@ -79,21 +79,42 @@ labelTree tree =
 
 newtype WithCounter a = MkWithCounter { runWithCounter :: Int -> (a, Int) }
 
-labelTree' :: Tree a -> WithCounter (Tree (Int , a))
-labelTree' (Node l x r) =
+labelTree'Orig :: Tree a -> WithCounter (Tree (Int , a))
+labelTree'Orig (Node l x r) =
     MkWithCounter (\ currentLabel ->
-    case runWithCounter (labelTree' l) currentLabel of
+    case runWithCounter (labelTree'Orig l) currentLabel of
         (l', currentLabel') ->
             case runWithCounter tick currentLabel' of
                 (labelForX, nextLabel) ->
-                  case runWithCounter (labelTree' r) nextLabel of
+                  case runWithCounter (labelTree'Orig r) nextLabel of
                        (r', currentlabel'') ->
                          (Node l' (labelForX, x) r', currentlabel'')
     )
 
-labelTree' Leaf =
+labelTree'Orig Leaf =
     MkWithCounter (\ currentLabel -> (Leaf, currentLabel))
+
+labelTree' :: Tree a -> WithCounter (Tree (Int , a))
+labelTree' (Node l x r) =
+    labelTree' l `bindWithCounter` \l' -> 
+    tick `bindWithCounter` \labelForX  ->
+    labelTree' r `bindWithCounter` \r' ->
+    returnWithCounter (Node l' (labelForX, x) r')
+
+labelTree' Leaf =
+    returnWithCounter Leaf
 
 tick :: WithCounter Int 
 tick = 
     MkWithCounter (\ current -> (current, current + 1))
+
+bindWithCounter :: WithCounter a -> (a -> WithCounter b) -> WithCounter b
+bindWithCounter computation continuation =
+    MkWithCounter (\ currentCounter ->
+        case runWithCounter computation currentCounter of 
+           (result, currentCounter') -> runWithCounter (continuation result) currentCounter'
+    )
+
+returnWithCounter :: a -> WithCounter a
+returnWithCounter x =
+    MkWithCounter(\ currentCounter -> (x, currentCounter))
