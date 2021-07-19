@@ -1,8 +1,8 @@
 module AbstractionPatterns where
 
+import           Control.Monad
 import           Data.Map (Map)
 import qualified Data.Map as M 
-import           Prelude hiding (Monad(..))
 
 newtype Address = MkAddress Int 
   deriving (Eq, Ord, Show)
@@ -44,21 +44,12 @@ bindMaybe computation continuation =
         Nothing -> Nothing 
         Just result -> continuation result 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+threeHops' :: Address -> Maybe String 
+threeHops' address0 = do
+    address1 <- M.lookup address0 addressMapping
+    address2 <- M.lookup address1 addressMapping
+    address3 <- M.lookup address2 addressMapping
+    return (show address3)
 
 
 data Tree a =
@@ -98,7 +89,7 @@ labelTree'Orig Leaf =
 labelTree' :: Tree a -> WithCounter (Tree (Int , a))
 labelTree' (Node l x r) =
     labelTree' l `bindWithCounter` \l' -> 
-    tick `bindWithCounter` \labelForX  ->
+    tick         `bindWithCounter` \labelForX  ->
     labelTree' r `bindWithCounter` \r' ->
     returnWithCounter (Node l' (labelForX, x) r')
 
@@ -121,7 +112,9 @@ returnWithCounter x =
     MkWithCounter(\ currentCounter -> (x, currentCounter))
 
 
-class Monad a where
+{- 
+
+class Applicative m => Monad m where
     return :: a -> m a
     (>>=)  :: m a -> (a -> m b) -> m b 
 
@@ -129,8 +122,43 @@ instance Monad Maybe where
     return = returnMaybe
     (>>=)  = bindMaybe
 
+instance Applicative Maybe where
+    pure  = return
+    (<*>) = ap 
+
+-}
+
 instance Monad WithCounter where
     return = returnWithCounter
     (>>=)  = bindWithCounter 
 
- 
+instance Applicative WithCounter where
+    pure  = return
+    (<*>) = ap 
+
+instance Functor WithCounter where 
+    fmap = liftM
+
+{- 
+
+liftM :: Monad m => (a -> b) -> m a -> m b
+liftM f computation = 
+    computation >>= \ a -> return (f a) 
+
+liftM2 :: Monad m => (a -> b -> c ) -> m a -> m b -> m c 
+liftM2 f computationa computationb =
+    computationa >>= \ a ->
+    computationb >>= \ b ->
+    return (f a b) 
+
+ap :: Monad m => m (a -> b) -> m a -> m b 
+ap computationf computationa =
+    computationf >>= \ f ->
+    computationa >>= \ a ->
+    return (f a)
+
+class Applicative f where
+    pure  :: a -> f a 
+    (<*>) :: f (a -> b) -> f a -> f b
+
+-}
