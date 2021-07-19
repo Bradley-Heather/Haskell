@@ -42,3 +42,49 @@ bindMaybe computation continuation =
     case computation of 
         Nothing -> Nothing 
         Just result -> continuation result 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+data Tree a =
+    Node (Tree a) a (Tree a)
+  | Leaf
+  deriving (Show)
+
+buildTree :: a -> Int -> Tree a
+buildTree x h =
+    if h <= 0 
+        then Leaf 
+        else
+            let subTree = buildTree x (h - 1)
+            in Node subTree x subTree
+
+
+
+labelTree' :: Tree a -> Int -> (Tree (Int , a), Int)
+labelTree' (Node l x r) currentLabel  =
+    case labelTree' l currentLabel of
+        (l', currentLabel') ->
+            let
+                labelForX = currentLabel'
+                nextLabel = currentLabel' + 1
+            in 
+                case labelTree' r nextLabel of
+                    (r', currentlabel'') ->
+                        (Node l' (labelForX, x) r', currentlabel'')
+
+labelTree' Leaf currentLabel = (Leaf, currentLabel)
