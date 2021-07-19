@@ -1,0 +1,12 @@
+cabal-version:      2.4
+name:               abstraction-patterns
+version:            0.1.0.0
+author:             Bradley Heather
+maintainer:         80346526+Bradley-Heather@users.noreply.github.com
+extra-source-files: CHANGELOG.md
+
+library
+    exposed-modules:  AbstractionPatterns
+    build-depends:    base ^>=4.14.2.0, containers
+    hs-source-dirs:   src
+    default-language: Haskell2010
