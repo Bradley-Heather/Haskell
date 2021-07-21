@@ -8,6 +8,11 @@ dispatch :: String -> [String] -> IO ()
 dispatch "add"    = add
 dispatch "view"   = view
 dispatch "remove" = remove
+dispatch command = doesntExist command 
+
+doesntExist :: String  -> [String] -> IO ()
+doesntExist command _ = 
+    putStrLn $  "The " ++ command ++ " command doesn't exist"
 
 main = do
     (command:argList) <- getArgs 
@@ -15,6 +20,7 @@ main = do
 
 add :: [String] -> IO ()
 add [fileName, todoItem] = appendFile fileName ("\n" ++ todoItem)
+add _ = putStrLn "The add command takes exactly 2 arguments"
 
 view :: [String] -> IO ()
 view [fileName] = do 
@@ -23,6 +29,7 @@ view [fileName] = do
         numberedTasks = zipWith (\n line -> show n ++ " - " ++ line)
                         [0..] todoTasks
     putStr $ unlines numberedTasks
+view _ = putStrLn "the view command take's a file name only"
 
 remove :: [String] -> IO ()
 remove [fileName, numberString] = do 
@@ -41,4 +48,5 @@ remove [fileName, numberString] = do
             hClose tempHandle
             removeFile fileName
             renameFile tempName fileName)
+remove _ = putStrLn "The remove command takes exactly 2 arguments"
 
