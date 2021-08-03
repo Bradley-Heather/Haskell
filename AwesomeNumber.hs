@@ -4,17 +4,16 @@ import Data.Char
 
 data Answer = No | Almost | Yes deriving (Show, Read, Eq, Ord)
 
+isInteresting :: Int -> Answer
+isInteresting a 
+    | interestingNum a == True        = Yes
+    | interestingNum (a + 1) == True  = Almost
+    | interestingNum (a + 2) == True  = Almost
+    | otherwise                      = No
 
-isInteristing x 
-    | isInteresting' x       == True  = Yes
-    | isInteresting' (x + 1) == True  = Almost
-    | isInteresting' (x + 2) == True  = Almost
-    | otherwise                       = No
-
-isInteresting' :: Int -> Bool
-isInteresting' x = x `rem` (10 ^ (length (show x) - 1)) == 0 || show x == reverse (show x) || isAscending x || isDescending x 
+interestingNum :: Int -> Bool
+interestingNum x = x `rem` (10 ^ (length (show x) - 1)) == 0 || show x == reverse (show x) || isAscending x || isDescending x 
   
-
 count :: Int -> [Int]
 count n = map digitToInt $ show n 
 
