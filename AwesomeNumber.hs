@@ -4,27 +4,34 @@ import Data.Char
 
 data Answer = No | Almost | Yes deriving (Show, Read, Eq, Ord)
 
-isInteresting :: Int -> Answer
-isInteresting a 
-    | interestingNum a == True        = Yes
-    | interestingNum (a + 1) == True  = Almost
-    | interestingNum (a + 2) == True  = Almost
-    | otherwise                      = No
+isInteresting :: Integer -> [Integer] -> Answer
+isInteresting a as
+    | interestingNum a as       == True  = Yes
+    | interestingNum (a + 1) as == True  = Almost
+    | interestingNum (a + 2) as == True  = Almost
+    | otherwise                          = No
 
-interestingNum :: Int -> Bool
-interestingNum x = x `rem` (10 ^ (length (show x) - 1)) == 0 || show x == reverse (show x) || isAscending x || isDescending x 
+interestingNum :: Integer -> [Integer] -> Bool
+interestingNum x xs = x > 99 && (x `rem` (10 ^ (length (show x) - 1)) == 0 || show x == reverse (show x) || isAscending x || isDescending x || x `elem` xs)
   
-count :: Int -> [Int]
-count n = map digitToInt $ show n 
+count :: Integer -> [Integer]
+count n = map toInteger $ map digitToInt $ show n 
 
-correctCount :: [Int] -> Bool
+correctCount :: [Integer] -> Bool
 correctCount [x] = True
-correctCount (x:n:ns) =
-    if x + 1 == n then correctCount (n:ns)
-    else False
+correctCount (x:n:ns) 
+    | succ x == n = correctCount (n:ns)
+    | otherwise = False
 
-isAscending :: Int -> Bool
-isAscending n = correctCount $ count n
+correctCount' :: [Integer] -> Bool
+correctCount' [x] = True
+correctCount' (x:n:ns) 
+    | last (x:n:ns) == 0 && (x:n:ns) !! (length (x:n:ns) - 2) == 9 = correctCount' $ init (x:n:ns)
+    | succ x == n                                                  = correctCount' (n:ns)
+    | otherwise                                                    = False
 
-isDescending :: Int -> Bool
+isAscending :: Integer -> Bool
+isAscending n = correctCount' $ count n
+
+isDescending :: Integer -> Bool
 isDescending n = correctCount $ reverse (count n)
