@@ -6,10 +6,9 @@ data Answer = No | Almost | Yes deriving (Show, Read, Eq, Ord)
 
 isInteresting :: Integer -> [Integer] -> Answer
 isInteresting a as
-    | interestingNum a as       == True  = Yes
-    | interestingNum (a + 1) as == True  = Almost
-    | interestingNum (a + 2) as == True  = Almost
-    | otherwise                          = No
+    | interestingNum a as                                 = Yes
+    | interestingNum (a + 1) as || interestingNum (a + 2) as = Almost
+    | otherwise                                                = No
 
 interestingNum :: Integer -> [Integer] -> Bool
 interestingNum x xs = x > 99 && (x `rem` (10 ^ (length (show x) - 1)) == 0 || show x == reverse (show x) || isAscending x || isDescending x || x `elem` xs)
