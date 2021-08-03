@@ -5,11 +5,13 @@ import Data.Char
 data Answer = No | Almost | Yes deriving (Show, Read, Eq, Ord)
 
 
-isInteristing x =
-    if isInteresting' x       == True  then  Yes
-  --  if isInteresting' (x + 1) == True || isInteresting' (x + 2) == True then Almost
-    else No
+isInteristing x 
+    | isInteresting' x       == True  = Yes
+    | isInteresting' (x + 1) == True  = Almost
+    | isInteresting' (x + 2) == True  = Almost
+    | otherwise                       = No
 
+isInteresting' :: Int -> Bool
 isInteresting' x = x `rem` (10 ^ (length (show x) - 1)) == 0 || show x == reverse (show x) || isAscending x || isDescending x 
   
 
