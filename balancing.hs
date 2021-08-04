@@ -13,6 +13,5 @@ balance left right
     | otherwise                   = Balance 
 
 weight :: String -> Int 
-weight [] = 0 
 weight n  = 3 * length (filter (== '?') n) + 2 * length (filter (== '!') n)
 
