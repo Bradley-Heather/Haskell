@@ -1,10 +1,14 @@
-module Codewars.Kata.Hashtag where
-import Data.Char
+module Codewars.Kata.Permutations (permutations) where
 
+import Data.List (delete, sort, group)
 
-generateHashtag :: String -> Maybe String
-generateHashtag n 
-    | n /= [] && length n < 140 = Just ('#' : concatMap caps (words n))
-    | otherwise                      = Nothing
-        where caps (x:xs) = toUpper x : xs
-    
+permutations :: String -> [String]
+permutations xs = map head $ group . sort $ allPerms xs
+   where
+      allPerms [] = [[]] 
+      allPerms xs = 
+        do 
+           x <- xs
+           let n = delete x xs
+           ns <- permutations n
+           return (x : ns)
