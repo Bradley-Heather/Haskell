@@ -1,0 +1,76 @@
+module WordNumber where
+import Data.List
+import Data.Char
+
+data DividedResult = Result (Integer, Integer) | DividedByZero 
+     deriving (Show, Eq)
+
+divideBy :: Integer -> Integer -> DividedResult
+divideBy 0 _ = DividedByZero
+divideBy _ 0 = DividedByZero
+divideBy num denom =  Result (go num denom 0)
+   where go n d count 
+          | n < d = (count, n)
+          | otherwise =
+                go (n - d) d (count + 1)
+
+mc91 :: Integer -> Integer
+mc91 n 
+   | n > 100   = n - 10
+   | otherwise = 91 
+
+digitToWord :: Int -> String 
+digitToWord n = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"] !! n
+
+digits :: Int -> [Int]
+digits n = map digitToInt $ show n
+
+wordNumber :: Int -> String
+wordNumber n = intercalate "-" . map digitToWord $ digits n
+
+safeTail :: [a] -> Maybe [a]
+safeTail []    = Nothing 
+safeTail [x]   = Nothing 
+safeTail (_:xs) = Just xs
+
+safeHead :: [a] -> Maybe a
+safeHead []    =  Nothing 
+safeHead (x:_) = Just x   
+
+eftBool :: Bool -> Bool -> [Bool]
+eftBool x y = enumFromTo False True
+
+eftOrd :: Ordering -> Ordering -> [Ordering]
+eftOrd = enumFromTo 
+
+eftInt :: Int -> Int -> [Int]
+eftInt n y = enumFromTo n y 
+
+eftChar :: Char -> Char -> [Char]
+eftChar = enumFromTo
+
+td :: String -> [String]
+td [] = []
+td n  = if null dp then takeWhile (/=  ' ') n : td dp else takeWhile (/=  ' ') n : td (tail dp)
+   where dp = dropWhile (/= ' ') n
+      
+
+firstSen = "Tiger Tiger, Burning Bright\n"
+secondSen = "In the Forests of the Night\n"
+thirdSen = "What immortal hand or eye\n"
+fourthSen = "Could frame thy Fearful symmetry"
+
+sentences = firstSen ++ secondSen ++ thirdSen ++ fourthSen
+
+myLines :: String -> [String]
+myLines [] = []
+myLines n
+   | null dp = takeWhile (/= '\n') n : myLines dp
+   | otherwise = takeWhile (/= '\n') n : myLines (tail dp)
+          where dp = dropWhile (/= '\n') n
+
+words' _ [] = []
+words' n xs 
+   | null dp = takeWhile (/= n) xs : words' n dp
+   | otherwise = takeWhile (/= n) xs : words' n (tail dp)
+          where dp = dropWhile (/= n) xs

@@ -1,14 +1,19 @@
-module Codewars.Kata.Permutations (permutations) where
+module AlphabeticAnagrams where
+import Data.List
 
-import Data.List (delete, sort, group)
+lexiPos' :: String -> Int
+lexiPos' xs = ((+1) . length) . fst $ break (== xs) $ sort . nub $ permutations xs
 
-permutations :: String -> [String]
-permutations xs = map head $ group . sort $ allPerms xs
-   where
-      allPerms [] = [[]] 
-      allPerms xs = 
-        do 
-           x <- xs
-           let n = delete x xs
-           ns <- permutations n
-           return (x : ns)
+lexiPos []  = 0
+lexiPos [x] = 1
+lexiPos (x:xs) = length n + lexiPos n + lexiPos xs
+    where n = filter (<x) xs
+         
+perm [] = 0
+perm [n] = 1
+perm (n:ns) = length (n:ns) * perm ns 
+
+
+possPerm xs = product $ map perm $ group (sort xs)
+
+perms xs = perm xs `div` possPerm xs
