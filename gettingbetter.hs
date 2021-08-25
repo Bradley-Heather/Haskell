@@ -74,3 +74,53 @@ words' n xs
    | null dp = takeWhile (/= n) xs : words' n dp
    | otherwise = takeWhile (/= n) xs : words' n (tail dp)
           where dp = dropWhile (/= n) xs
+
+mySqr :: [Integer]
+mySqr = [x^2 | x <- [1..5]]
+
+myCube :: [Integer]
+myCube = [y^3 | y <- [1..5]]
+
+myTup ::  Int
+myTup = length $ [(x, y) | x <- mySqr , y <- myCube, x < 50 , y < 50]
+
+acro :: String -> String
+acro xs = [x | x <- xs , x `elem` ['A'..'Z']] 
+
+itIsAMystery :: [Char] -> [Bool]
+itIsAMystery xs = map (\x -> x `elem` "aeiou") xs
+
+myFilter ::  String -> [String]
+myFilter = filter (\x -> x `notElem` ["The", "a", "an"]) . words
+
+zip' :: [a] -> [b] -> [(a,b)]
+zip' [] _ = []
+zip' _ [] = []
+zip' (x:xs) (y:ys) = (,) x y : zip' xs ys
+
+zipWith' :: (a -> b -> c) -> [a] -> [b] -> [c]
+zipWith' _ [] _ = []
+zipWith' _ _ [] = []
+zipWith' n (x:xs) (y:ys) = n x y : zipWith' n xs ys 
+
+caps :: String -> Char
+caps = toUpper . head
+
+myOr :: [Bool] -> Bool
+myOr [] = False 
+myOr (x:xs) = x || myOr xs
+
+myAny :: (a -> Bool) -> [a] -> Bool 
+myAny _ [] = False 
+myAny n (x:xs)
+   | n x       = True 
+   | otherwise = myAny n xs
+
+myElem :: Eq a => a -> [a] -> Bool 
+myElem _ [] = False
+myElem n (x:xs) 
+    | x == n    = True 
+    | otherwise = myElem n xs
+
+myElem' :: Eq a => a -> [a] -> Bool 
+myElem' n xs = any (== n) xs  
