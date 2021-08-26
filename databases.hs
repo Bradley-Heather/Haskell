@@ -10,6 +10,7 @@ theDatabase =
    [ DbDate (UTCTime (fromGregorian 1911 5 1) (secondsToDiffTime 34123))
    , DbNumber 9001
    , DbString "Hello, world!"
+   , DbNumber 3001
    , DbDate (UTCTime (fromGregorian 1921 5 1) (secondsToDiffTime 34123))
    ]
 
@@ -25,3 +26,11 @@ filterDbNumber db = foldr go [] db
 
 mostRecent :: [DatabaseItem] -> UTCTime 
 mostRecent = minimum . filterDbDate
+
+sumDb :: [DatabaseItem] -> Integer 
+sumDb = sum . filterDbNumber
+
+avgDb ::  [DatabaseItem] -> Double
+avgDb db = fromIntegral total / fromIntegral count
+   where total = length $ filterDbNumber db
+         count = sum $ filterDbNumber db
