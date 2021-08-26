@@ -132,3 +132,10 @@ myReverse (x:xs) = undefined
 squish :: [[a]] -> [a]
 squish [] = []
 squish (x:xs) = x ++ squish xs 
+
+squishMap :: (a -> [b]) -> [a] -> [b]
+squishMap n [] = []
+squishMap n (x:xs) = n x ++ squishMap n xs
+
+squishAgain :: [[a]] -> [a]
+squishAgain = squishMap id
