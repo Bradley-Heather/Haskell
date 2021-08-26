@@ -1,27 +1,20 @@
-module Time where
+stops :: [Char]
+stops  = "pbtdkg"
 
-import Data.Time
+vowels :: [Char]
+vowels = "aeiou"
 
-data DatabaseItem = DbString String | DbNumber Integer | DbDate UTCTime 
-     deriving (Eq, Ord, Show)
+funWrds :: [(Char, Char, Char)]
+funWrds = [(s1 , v , s2) | s1 <- stops, v <- vowels, s2 <- stops]
 
-theDatabase :: [DatabaseItem]
-theDatabase = 
-   [ DbDate (UTCTime (fromGregorian 1911 5 1) (secondsToDiffTime 34123))
-   , DbNumber 9001
-   , DbString "Hello, world!"
-   , DbDate (UTCTime (fromGregorian 1921 5 1) (secondsToDiffTime 34123))
-   ]
+funwrds' :: [(Char, Char, Char)]
+funwrds' = [('p', 'a', s2) | s2 <- stops ]
 
-filterDbDate :: [DatabaseItem] -> [UTCTime]
-filterDbDate db = foldr go [] db
-  where go (DbDate x) y = x : y
-        go _ y = y
+nouns = ["cat", "dog", "ball", "flamingo", "hat"]
+verbs = ["has", "on", "under", "eats"]
 
-filterDbNumber :: [DatabaseItem] -> [Integer]
-filterDbNumber db = foldr go [] db
-   where go (DbNumber x) y = x : y
-         go _ y = y 
+funWrds'' :: [String]
+funWrds'' = [ n1 ++ " " ++ v ++ " " ++ n2 | n1 <- nouns, v <- verbs, n2 <- nouns]
 
-mostRecent :: [DatabaseItem] -> UTCTime 
-mostRecent = minimum . filterDbDate
+seekritFunc :: String -> Int
+seekritFunc x = div (sum (map length (words x))) (length (words x))
