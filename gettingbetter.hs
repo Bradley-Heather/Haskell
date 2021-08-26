@@ -124,3 +124,11 @@ myElem n (x:xs)
 
 myElem' :: Eq a => a -> [a] -> Bool 
 myElem' n xs = any (== n) xs  
+
+-- myReverse :: [a] -> [a]
+myReverse [] = []
+myReverse (x:xs) = undefined 
+
+squish :: [[a]] -> [a]
+squish [] = []
+squish (x:xs) = x ++ squish xs 
