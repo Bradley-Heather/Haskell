@@ -110,11 +110,21 @@ myOr :: [Bool] -> Bool
 myOr [] = False 
 myOr (x:xs) = x || myOr xs
 
+myOr' :: [Bool] -> Bool
+myOr' = foldr (\a b -> if a == True then True else b) False
+
+myOr'' :: [Bool] -> Bool 
+myOr'' = foldr (||) False 
+
 myAny :: (a -> Bool) -> [a] -> Bool 
 myAny _ [] = False 
 myAny n (x:xs)
    | n x       = True 
    | otherwise = myAny n xs
+
+myAny' :: (a -> Bool) -> [a] -> Bool
+myAny' n = foldr go False
+    where go x y = n x || y
 
 myElem :: Eq a => a -> [a] -> Bool 
 myElem _ [] = False
@@ -123,11 +133,15 @@ myElem n (x:xs)
     | otherwise = myElem n xs
 
 myElem' :: Eq a => a -> [a] -> Bool 
-myElem' n xs = any (== n) xs  
+myElem' n xs = any (== n) xs 
+
+myElem'' :: Eq a => a -> [a] -> Bool
+myElem'' n  = foldr go False 
+     where go x y = n == x || y
 
 -- myReverse :: [a] -> [a]
 myReverse [] = []
-myReverse (x:xs) = undefined 
+myReverse (x:xs) = undefined
 
 squish :: [[a]] -> [a]
 squish [] = []
