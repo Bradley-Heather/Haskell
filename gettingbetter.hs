@@ -1,6 +1,10 @@
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE FlexibleInstances #-}
+
 module WordNumber where
 import Data.List
 import Data.Char
+import Data.Text.Array (new)
 
 data DividedResult = Result (Integer, Integer) | DividedByZero 
      deriving (Show, Eq)
@@ -139,7 +143,7 @@ myElem'' :: Eq a => a -> [a] -> Bool
 myElem'' n  = foldr go False 
      where go x y = n == x || y
 
--- myReverse :: [a] -> [a]
+myReverse :: [a] -> [a]
 myReverse [] = []
 myReverse (x:xs) = undefined
 
@@ -153,3 +157,14 @@ squishMap n (x:xs) = n x ++ squishMap n xs
 
 squishAgain :: [[a]] -> [a]
 squishAgain = squishMap id
+
+data Person = Person { name :: String 
+                     , age :: Int 
+                     }
+                     deriving (Eq, Show)
+
+
+type AuthorName = String 
+
+
+data Author = Fiction AuthorName | NonFiction AuthorName 

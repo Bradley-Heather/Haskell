@@ -1,20 +1,21 @@
-stops :: [Char]
-stops  = "pbtdkg"
+module Vehicle where
 
-vowels :: [Char]
-vowels = "aeiou"
+data Price = Price Integer 
+    deriving (Eq, Show)
 
-funWrds :: [(Char, Char, Char)]
-funWrds = [(s1 , v , s2) | s1 <- stops, v <- vowels, s2 <- stops]
+data Manufacturer = Mini | Mazda | Tata 
+    deriving (Eq, Show)
 
-funwrds' :: [(Char, Char, Char)]
-funwrds' = [('p', 'a', s2) | s2 <- stops ]
+data Airline = PapuAir | CatapultsR'Us | TakeYourChancesUnited
+    deriving (Eq, Show)
 
-nouns = ["cat", "dog", "ball", "flamingo", "hat"]
-verbs = ["has", "on", "under", "eats"]
+data Vehicle = Car Manufacturer Price | Plane Airline 
+    deriving (Eq, Show)
 
-funWrds'' :: [String]
-funWrds'' = [ n1 ++ " " ++ v ++ " " ++ n2 | n1 <- nouns, v <- verbs, n2 <- nouns]
+myCar     = Car Mini (Price 14000)
+urCar     = Car Mazda (Price 20000)
+clownCar  = Car Tata (Price 7000)
+doge      = Plane PapuAir
 
-seekritFunc :: String -> Int
-seekritFunc x = div (sum (map length (words x))) (length (words x))
+isCar :: Vehicle -> Bool 
+isCar x = x == myCar
